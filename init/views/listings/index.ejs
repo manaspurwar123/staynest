@@ -1,0 +1,65 @@
+<% layout("layouts/boilerplate") %>
+
+    <section class="home-hero">
+        <div class="home-hero-card">
+            <h1>Find places to stay on StayNest</h1>
+            <p>Discover homes, villas and rooms perfect for your next trip.</p>
+            <form class="home-search-panel" action="#all-listings">
+                <label class="home-search-field home-search-field-wide">
+                    <span>Location</span>
+                    <input type="text" value="Nearby" aria-label="Location">
+                </label>
+                <div class="home-search-row">
+                    <label class="home-search-field">
+                        <span>Check in</span>
+                        <input type="text" value="Add dates" aria-label="Check in">
+                    </label>
+                    <label class="home-search-field">
+                        <span>Check out</span>
+                        <input type="text" value="Add dates" aria-label="Check out">
+                    </label>
+                </div>
+                <div class="home-search-row">
+                    <label class="home-search-field">
+                        <span>Adults</span>
+                        <select aria-label="Adults">
+                            <option>2</option>
+                            <option>1</option>
+                            <option>3</option>
+                            <option>4</option>
+                        </select>
+                    </label>
+                    <label class="home-search-field">
+                        <span>Children</span>
+                        <select aria-label="Children">
+                            <option>0</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                        </select>
+                    </label>
+                </div>
+                <button class="home-search-btn" type="submit">Search</button>
+            </form>
+        </div>
+        <img class="home-hero-img" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85" alt="Beautiful modern home exterior">
+    </section>
+
+    <div id="all-listings"></div>
+    <h3>All Listings</h3>
+    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+        <% for(let listing of listings) { %>
+            <a href="/listings/<%= listing._id %>" class="listing-link">
+                <div class="card col listing-card">
+                    <img src="<%= listing.image %>" class="card-img-top" alt="listing_image">
+                    <div class="card-img-overlay"></div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <b><%= listing.title %></b><br>
+                            &#8377; <%= typeof listing.price==='number' ? listing.price.toLocaleString("en-IN") : listing.price %> / night
+                        </p>
+                    </div>
+                </div>
+            </a>
+            <% } %>
+    </div>

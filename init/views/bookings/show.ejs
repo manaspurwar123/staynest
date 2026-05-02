@@ -1,0 +1,38 @@
+<% layout("layouts/boilerplate") %>
+
+<div class="booking-confirmation">
+    <div class="booking-confirmation-card">
+        <div class="booking-confirmation-icon">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <h2>Booking confirmed</h2>
+        <p>Your stay at <b><%= listing.title %></b> has been saved.</p>
+        <div class="booking-confirmation-details">
+            <div>
+                <span>Guest</span>
+                <b><%= booking.guestName %></b>
+            </div>
+            <div>
+                <span>Email</span>
+                <b><%= booking.guestEmail %></b>
+            </div>
+            <div>
+                <span>Check in</span>
+                <b><%= booking.checkIn.toDateString() %></b>
+            </div>
+            <div>
+                <span>Check out</span>
+                <b><%= booking.checkOut.toDateString() %></b>
+            </div>
+            <div>
+                <span>Guests</span>
+                <b><%= booking.guests %></b>
+            </div>
+            <div>
+                <span>Total</span>
+                <b>&#8377; <%= booking.totalPrice.toLocaleString("en-IN") %></b>
+            </div>
+        </div>
+        <a class="btn booking-back-btn" href="/listings/<%= listing._id %>">Back to listing</a>
+    </div>
+</div>

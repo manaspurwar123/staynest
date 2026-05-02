@@ -1,0 +1,144 @@
+<% layout("layouts/boilerplate") %>
+    <% if (listing) { %>
+        <div class="row mt-3">
+            <div class="col-8 offset-3">
+                <h3>Listing Details :</h3>
+            </div>
+            <div class="col-10 offset-1">
+                <div class="show-booking-layout">
+                    <div class="card show-card listing-card">
+                        <img src="<%= listing.image %>" class="card-img-top show-img" alt="listing_image">
+                        <div class="card-body">
+                            <p class="card-text">
+                                <b>
+                                    <%= listing.title %>
+                                </b><br>
+                                <%= listing.description %><br>
+                                    &#8377; <%= typeof listing.price==='number' ? listing.price.toLocaleString("en-IN") :
+                                        listing.price %> / night<br>
+                                        <%= listing.location %><br>
+                                            <%= listing.country %>
+                            </p>
+                        </div>
+                    </div>
+                    <aside class="booking-card">
+                        <div class="booking-price">
+                            <b>&#8377; <%= typeof listing.price==='number' ? listing.price.toLocaleString("en-IN") : listing.price %></b>
+                            <span>/ night</span>
+                        </div>
+                        <form method="POST" action="/listings/<%= listing._id %>/bookings" class="booking-form">
+                            <div class="booking-form-grid">
+                                <label>
+                                    <span>Check in</span>
+                                    <input name="booking[checkIn]" type="date" required>
+                                </label>
+                                <label>
+                                    <span>Check out</span>
+                                    <input name="booking[checkOut]" type="date" required>
+                                </label>
+                            </div>
+                            <label>
+                                <span>Guests</span>
+                                <input name="booking[guests]" type="number" min="1" value="1" required>
+                            </label>
+                            <label>
+                                <span>Name</span>
+                                <input name="booking[guestName]" type="text" placeholder="Your full name" required>
+                            </label>
+                            <label>
+                                <span>Email</span>
+                                <input name="booking[guestEmail]" type="email" placeholder="you@example.com" required>
+                            </label>
+                            <button class="booking-reserve-btn" type="submit">Reserve</button>
+                        </form>
+                        <p class="booking-note">Booking data will be saved in database.</p>
+                    </aside>
+                </div>
+            </div>
+
+            <div class="btns gap-3 mt-3 col-10 offset-1">
+                <a href="/listings/<%= listing._id %>/edit" class="btn btn-danger edit-btn">Edit</a>
+                <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
+                    <button class="btn btn-dark">Delete</button>
+                </form>
+            </div>
+
+            <div class="col-10 offset-1 mt-5">
+                <hr class="review-divider">
+                <section class="review-section">
+                <% const reviewCount = listing.reviews ? listing.reviews.length : 0; %>
+                <% const reviewTotal = reviewCount ? listing.reviews.reduce((sum, review) => sum + Number(review.rating || 0), 0) : 0; %>
+                <% const reviewAverage = reviewCount ? (reviewTotal / reviewCount).toFixed(1) : 'New'; %>
+                <div class="review-summary">
+                    <div>
+                        <h3><%= reviewAverage %> · <%= reviewCount %> <%= reviewCount === 1 ? 'review' : 'reviews' %></h3>
+                        <p><%= reviewCount >= 3 ? 'Guests love this place.' : 'Average rating will appear after 3 reviews.' %></p>
+                    </div>
+                    <div class="review-score-badge">
+                        <i class="fa-solid fa-star"></i>
+                        <span><%= reviewAverage %></span>
+                    </div>
+                </div>
+
+                <h4 class="review-form-title">Leave a Review</h4>
+                <form method="POST" action="/listings/<%= listing._id %>/reviews" class="review-form">
+                    <div class="review-form-grid">
+                        <div>
+                            <label for="author" class="form-label">Your name</label>
+                            <input name="review[author]" type="text" class="form-control" id="author" placeholder="Enter your name" required>
+                        </div>
+                        <div>
+                            <label for="rating" class="form-label">Rating</label>
+                            <select class="form-select" id="rating" name="review[rating]" required>
+                                <option value="5">★★★★★ - Excellent</option>
+                                <option value="4">★★★★☆ - Good</option>
+                                <option value="3">★★★☆☆ - Average</option>
+                                <option value="2">★★☆☆☆ - Poor</option>
+                                <option value="1">★☆☆☆☆ - Bad</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <label for="comment" class="form-label">Comment</label>
+                        <textarea name="review[comment]" class="form-control" id="comment" rows="4" placeholder="Share what stood out about your stay" required></textarea>
+                    </div>
+                    <button class="btn review-submit-btn">Submit review</button>
+                </form>
+
+                <% if (listing.reviews && listing.reviews.length) { %>
+                    <hr>
+                    <div class="review-list-heading">
+                        <h4>Guest reviews</h4>
+                    </div>
+                    <div class="review-grid">
+                        <% listing.reviews.forEach((review)=> { %>
+                            <% const stars = '★★★★★'.slice(0, Number(review.rating || 0)); %>
+                            <% const emptyStars = '☆☆☆☆☆'.slice(0, 5 - Number(review.rating || 0)); %>
+                            <article class="review-item">
+                                <div class="review-author">
+                                    <div class="review-avatar"><%= (review.author || 'G').trim().charAt(0).toUpperCase() %></div>
+                                    <div>
+                                        <h5><%= review.author || 'Guest' %></h5>
+                                        <p><%= review.createdAt ? review.createdAt.toDateString() : 'Recently' %></p>
+                                    </div>
+                                </div>
+                                <div class="review-stars"><%= stars %><span><%= emptyStars %></span></div>
+                                <p class="review-comment"><%= review.comment %></p>
+                                <form method="POST"
+                                    action="/listings/<%= listing._id %>/reviews/<%= review._id %>/delete">
+                                    <button class="btn btn-sm btn-outline-danger review-delete-btn">Delete</button>
+                                </form>
+                            </article>
+                        <% }) %>
+                    </div>
+                            <% } %>
+                </section>
+            </div>
+        </div>
+        <% } else { %>
+            <div class="row mt-5">
+                <div class="col-8 offset-2">
+                    <div class="alert alert-danger">Listing not found.</div>
+                </div>
+            </div>
+            <% } %>
