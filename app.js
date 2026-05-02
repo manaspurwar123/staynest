@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config();
 const app = express();
 const mongoose = require('mongoose');
 const Listing = require('./models/listing.js');
@@ -36,7 +37,8 @@ app.use(session({
     saveUninitialized: false
 }));
 
-const MONGO_URL = 'mongodb://127.0.0.1:27017/mydb';
+const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/mydb';
+const PORT = process.env.PORT || 8080;
 
 async function main() {
     await mongoose.connect(MONGO_URL);
@@ -241,6 +243,6 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render('error', { err });
 });
 
-app.listen(8080, () => {
-    console.log('Server is running on port 8080');
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
