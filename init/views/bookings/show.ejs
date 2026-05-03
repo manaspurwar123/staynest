@@ -33,6 +33,11 @@
                 <b>&#8377; <%= booking.totalPrice.toLocaleString("en-IN") %></b>
             </div>
         </div>
-        <a class="btn booking-back-btn" href="/listings/<%= listing._id %>">Back to listing</a>
+        <div class="booking-confirmation-actions">
+            <a class="btn booking-back-btn" href="/listings/<%= listing._id %>">Back to listing</a>
+            <form method="POST" action="/bookings/<%= booking._id %>/delete">
+                <button class="btn booking-delete-btn">Delete booking</button>
+            </form>
+        </div>
     </div>
 </div>

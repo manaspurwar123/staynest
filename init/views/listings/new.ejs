@@ -15,7 +15,18 @@
                 <div class="valid-feedback">Looks good!</div>
                 <div class="mb-3">
                     <label for="image" class="form-label">Image Link</label>
-                    <input name="image" placeholder="enter image url" type="text" class="form-control" />
+                    <input name="image" placeholder="enter image url" type="text" inputmode="url" class="form-control" />
+                    <div class="form-text">Optional. Leave blank to use the StayNest fallback image.</div>
+                    <div class="invalid-feedback">Please enter a valid image URL.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select name="category" class="form-select" required>
+                        <% categories.forEach((category) => { %>
+                            <option value="<%= category %>"><%= category %></option>
+                        <% }) %>
+                    </select>
+                    <div class="invalid-feedback">Please choose a category!</div>
                 </div>
                 <div class="row">
                     <div class="mb-3 col-md-4">

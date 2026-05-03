@@ -22,14 +22,6 @@
 <body>
     <%- include("../includes/navbar.ejs") %>
 
-        <!-- AUTH_MARKER_v1 -->
-        <!-- Auth button positioned absolutely in navbar area -->
-        <div style="position: fixed; top: 12px; right: 20px; z-index: 100;">
-            <button class="btn auth-btn-trigger" data-bs-toggle="modal" data-bs-target="#authModal">
-                <i class="fa-solid fa-circle-user"></i> Log in / Sign up
-            </button>
-        </div>
-
         <!-- Auth modal: Sign up / Log in -->
         <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-md">
@@ -98,6 +90,7 @@
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
                 crossorigin="anonymous"></script>
+            <script src="/js/script.js"></script>
 </body>
 
 </html>

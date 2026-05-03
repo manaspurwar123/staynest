@@ -1,4 +1,61 @@
-const sampleListing = [
+const IMAGE_POOLS = {
+    Apartment: [
+        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267",
+        "https://images.unsplash.com/photo-1493809842364-78817add7ffb",
+        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
+    ],
+    Beach: [
+        "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+        "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2",
+        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
+    ],
+    Camping: [
+        "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1",
+        "https://images.unsplash.com/photo-1501785888041-af3ef285b470",
+        "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4",
+    ],
+    City: [
+        "https://images.unsplash.com/photo-1467269204594-9661b134dd2b",
+        "https://images.unsplash.com/photo-1455587734955-081b22074882",
+        "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85",
+    ],
+    Farmhouse: [
+        "https://images.unsplash.com/photo-1564013799919-ab600027ffc6",
+        "https://images.unsplash.com/photo-1494526585095-c41746248156",
+        "https://images.unsplash.com/photo-1480074568708-e7b720bb3f09",
+    ],
+    Mountain: [
+        "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85",
+        "https://images.unsplash.com/photo-1510798831971-661eb04b3739",
+        "https://images.unsplash.com/photo-1518780664697-55e3ad937233",
+    ],
+    Rooms: [
+        "https://images.unsplash.com/photo-1566665797739-1674de7a421a",
+        "https://images.unsplash.com/photo-1571896349842-33c89424de2d",
+        "https://images.unsplash.com/photo-1590490360182-c33d57733427",
+    ],
+    Villa: [
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
+        "https://images.unsplash.com/photo-1564013799919-ab600027ffc6",
+        "https://images.unsplash.com/photo-1484154218962-a197022b5858",
+    ],
+};
+
+const imageUrl = (url) => `${url}?auto=format&fit=crop&w=700&q=60&fm=webp`;
+
+const inferCategory = (listing) => {
+    const text = `${listing.title} ${listing.description} ${listing.location}`.toLowerCase();
+    if (/apartment|studio|loft|penthouse/.test(text)) return "Apartment";
+    if (/villa|haveli/.test(text)) return "Villa";
+    if (/farm|estate|bungalow/.test(text)) return "Farmhouse";
+    if (/beach|sea|island|goa|pondicherry|varkala|gokarna|diu|kovalam/.test(text)) return "Beach";
+    if (/mountain|cabin|chalet|hill|peak|manali|auli|mussoorie|nainital|srinagar|shimla|darjeeling|kodaikanal|gangtok/.test(text)) return "Mountain";
+    if (/camp|treehouse|canyon/.test(text)) return "Camping";
+    if (/city|urban|metro|rooftop|temple|fort|palace|heritage|courtyard|mumbai|bangalore|jaipur|varanasi|madurai|gwalior|gurugram|delhi|pune|kolkata|noida|hyderabad|chennai|ahmedabad/.test(text)) return "City";
+    return "Rooms";
+};
+
+const rawListings = [
     {
         title: "Sea View Villa",
         description: "Beautiful villa with ocean view and private pool.",
@@ -222,7 +279,258 @@ const sampleListing = [
         price: 2250,
         location: "Gwalior, Madhya Pradesh",
         country: "India",
+    },
+    {
+        title: "Pearl City Apartment",
+        description: "Bright serviced apartment with workspace and easy market access.",
+        image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267",
+        price: 2450,
+        location: "Hyderabad, Telangana",
+        country: "India",
+    },
+    {
+        title: "Marina Bay Studio",
+        description: "Compact studio near the marina with breezy balcony seating.",
+        image: "https://images.unsplash.com/photo-1505691938895-1758d7feb511",
+        price: 2100,
+        location: "Chennai, Tamil Nadu",
+        country: "India",
+    },
+    {
+        title: "Emerald Valley Villa",
+        description: "Private villa with valley views, garden dining and a plunge pool.",
+        image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6",
+        price: 4850,
+        location: "Lonavala, Maharashtra",
+        country: "India",
+    },
+    {
+        title: "Saffron Heritage Rooms",
+        description: "Boutique rooms in a restored old-town home with carved balconies.",
+        image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d",
+        price: 2650,
+        location: "Jodhpur, Rajasthan",
+        country: "India",
+    },
+    {
+        title: "Pine Ridge Mountain Cabin",
+        description: "Mountain cabin with forest trails, fireplace and sunrise deck.",
+        image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85",
+        price: 2950,
+        location: "Shimla, Himachal Pradesh",
+        country: "India",
+    },
+    {
+        title: "Golden Sands Beach Villa",
+        description: "Beach villa with open lounge, palm garden and sea breeze.",
+        image: "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+        price: 5100,
+        location: "Varkala, Kerala",
+        country: "India",
+    },
+    {
+        title: "Metro View Urban Loft",
+        description: "Urban loft with skyline windows and quick metro connectivity.",
+        image: "https://images.unsplash.com/photo-1502672023488-70e25813eb80",
+        price: 3300,
+        location: "Delhi",
+        country: "India",
+    },
+    {
+        title: "Mango Grove Farmhouse",
+        description: "Farmhouse stay with orchard walks, outdoor meals and bonfire.",
+        image: "https://images.unsplash.com/photo-1494526585095-c41746248156",
+        price: 3750,
+        location: "Alibaug, Maharashtra",
+        country: "India",
+    },
+    {
+        title: "Himalayan Peak Homestay",
+        description: "Warm mountain homestay close to viewpoints and tea stalls.",
+        image: "https://images.unsplash.com/photo-1510798831971-661eb04b3739",
+        price: 1850,
+        location: "Darjeeling, West Bengal",
+        country: "India",
+    },
+    {
+        title: "Blue Lagoon Beach Hut",
+        description: "Simple beach hut with hammock corner and direct shore access.",
+        image: "https://images.unsplash.com/photo-1470246973918-29a93221c455",
+        price: 1750,
+        location: "Gokarna, Karnataka",
+        country: "India",
+    },
+    {
+        title: "Lotus Lake Apartment",
+        description: "Spacious apartment near lakefront cafes and evening walking paths.",
+        image: "https://images.unsplash.com/photo-1493666438817-866a91353ca9",
+        price: 2350,
+        location: "Bhopal, Madhya Pradesh",
+        country: "India",
+    },
+    {
+        title: "Silver Oak Camping Stay",
+        description: "Camping stay with tents, stargazing, barbecue and guided trails.",
+        image: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1",
+        price: 1450,
+        location: "Pachmarhi, Madhya Pradesh",
+        country: "India",
+    },
+    {
+        title: "Coconut Coast Rooms",
+        description: "Airy rooms near coconut groves and calm coastal lanes.",
+        image: "https://images.unsplash.com/photo-1445019980597-93fa8acb246c",
+        price: 1650,
+        location: "Kovalam, Kerala",
+        country: "India",
+    },
+    {
+        title: "Royal City Palace Suite",
+        description: "City suite with palace-inspired interiors and breakfast service.",
+        image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a",
+        price: 4400,
+        location: "Mysuru, Karnataka",
+        country: "India",
+    },
+    {
+        title: "Orchard Farm Villa",
+        description: "Farm villa with fruit orchards, patio seating and chef meals.",
+        image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6",
+        price: 4050,
+        location: "Mahabaleshwar, Maharashtra",
+        country: "India",
+    },
+    {
+        title: "Cloud Nine Mountain Chalet",
+        description: "Mountain chalet with large windows and misty valley views.",
+        image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd",
+        price: 3400,
+        location: "Kodaikanal, Tamil Nadu",
+        country: "India",
+    },
+    {
+        title: "Casa Coral Beach Studio",
+        description: "Beach studio with white interiors, kitchenette and sunset walks.",
+        image: "https://images.unsplash.com/photo-1505691938895-1758d7feb511",
+        price: 2250,
+        location: "Diu",
+        country: "India",
+    },
+    {
+        title: "Indigo City Apartment",
+        description: "Modern apartment close to restaurants, offices and shopping streets.",
+        image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267",
+        price: 2750,
+        location: "Pune, Maharashtra",
+        country: "India",
+    },
+    {
+        title: "Bamboo Forest Eco Rooms",
+        description: "Eco rooms surrounded by bamboo, streams and nature trails.",
+        image: "https://images.unsplash.com/photo-1448375240586-882707db888b",
+        price: 2050,
+        location: "Sakleshpur, Karnataka",
+        country: "India",
+    },
+    {
+        title: "Desert Moon Camp",
+        description: "Camping tents with folk music, dune safari and night sky views.",
+        image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
+        price: 1700,
+        location: "Osian, Rajasthan",
+        country: "India",
+    },
+    {
+        title: "Sunrise Harbor Villa",
+        description: "Harbor-side villa with terrace breakfast and quiet lanes nearby.",
+        image: "https://images.unsplash.com/photo-1484154218962-a197022b5858",
+        price: 4650,
+        location: "Kochi, Kerala",
+        country: "India",
+    },
+    {
+        title: "Maple Street Guest Rooms",
+        description: "Comfortable rooms in a quiet neighborhood near city attractions.",
+        image: "https://images.unsplash.com/photo-1455587734955-081b22074882",
+        price: 1900,
+        location: "Ahmedabad, Gujarat",
+        country: "India",
+    },
+    {
+        title: "Meadow View Farmhouse",
+        description: "Open meadow farmhouse with cycling routes and weekend barbecue.",
+        image: "https://images.unsplash.com/photo-1494526585095-c41746248156",
+        price: 3150,
+        location: "Mysuru, Karnataka",
+        country: "India",
+    },
+    {
+        title: "Snowline Mountain Rooms",
+        description: "Cozy mountain rooms with balcony views and cafe access.",
+        image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
+        price: 2300,
+        location: "Gangtok, Sikkim",
+        country: "India",
+    },
+    {
+        title: "Lagoon Side Houseboat",
+        description: "Private houseboat stay with local meals and lagoon sunsets.",
+        image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
+        price: 3050,
+        location: "Kumarakom, Kerala",
+        country: "India",
+    },
+    {
+        title: "Capital Skyline Penthouse",
+        description: "Penthouse apartment with city skyline, lounge deck and work desk.",
+        image: "https://images.unsplash.com/photo-1502672023488-70e25813eb80",
+        price: 5450,
+        location: "Noida, Uttar Pradesh",
+        country: "India",
+    },
+    {
+        title: "Palm Courtyard Villa",
+        description: "Peaceful villa with palm courtyard, indoor games and garden sitout.",
+        image: "https://images.unsplash.com/photo-1480074568708-e7b720bb3f09",
+        price: 3950,
+        location: "Auroville, Tamil Nadu",
+        country: "India",
+    },
+    {
+        title: "Canyon Edge Camping",
+        description: "Canyon campsite with guided hikes, campfire and valley sunrise.",
+        image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470",
+        price: 1600,
+        location: "Gandikota, Andhra Pradesh",
+        country: "India",
+    },
+    {
+        title: "Monsoon Valley Cottage",
+        description: "Green valley cottage with waterfall trails and covered patio.",
+        image: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e",
+        price: 2550,
+        location: "Igatpuri, Maharashtra",
+        country: "India",
+    },
+    {
+        title: "Art District City Loft",
+        description: "City loft near galleries, cafes and weekend cultural walks.",
+        image: "https://images.unsplash.com/photo-1493666438817-866a91353ca9",
+        price: 2850,
+        location: "Kolkata, West Bengal",
+        country: "India",
     }
 ];
+const withStayImage = (listing, index = 0) => {
+    const category = inferCategory(listing);
+    const images = IMAGE_POOLS[category] || IMAGE_POOLS.Rooms;
+    return {
+        ...listing,
+        category,
+        image: imageUrl(images[index % images.length]),
+    };
+};
 
-module.exports = { data: sampleListing };
+const sampleListing = rawListings.map(withStayImage);
+
+module.exports = { data: sampleListing, inferCategory, withStayImage };

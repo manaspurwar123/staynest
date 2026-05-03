@@ -9,11 +9,19 @@
             <div class="navbar-nav">
                 <a class="nav-link active" href="/">Home</a>
                 <a class="nav-link" href="/listings">All Listings</a>
+                <a class="nav-link" href="/bookings">Bookings</a>
+                <a class="nav-link" href="/wishlists">Wishlists</a>
+                <a class="nav-link" href="/inquiries">Inquiries</a>
                 <a class="nav-link" href="/listings/new">Add new Listing</a>
             </div>
-            <div class="navbar-nav ms-auto">
-                <button class="nav-link btn btn-link" type="button" data-bs-toggle="modal" data-bs-target="#authModal" data-auth-tab="login-tab">Login</button>
-                <button class="nav-link btn btn-link" type="button" data-bs-toggle="modal" data-bs-target="#authModal" data-auth-tab="signup-tab">Signup</button>
+            <div class="navbar-nav ms-auto auth-navbar-actions">
+                <button class="nav-auth-btn nav-auth-btn-ghost" type="button" data-bs-toggle="modal" data-bs-target="#authModal" data-auth-tab="login-tab">
+                    <i class="fa-regular fa-circle-user"></i>
+                    Login
+                </button>
+                <button class="nav-auth-btn nav-auth-btn-solid" type="button" data-bs-toggle="modal" data-bs-target="#authModal" data-auth-tab="signup-tab">
+                    Signup
+                </button>
             </div>
         </div>
     </div>

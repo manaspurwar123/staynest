@@ -1,0 +1,45 @@
+<% layout("layouts/boilerplate") %>
+
+<section class="bookings-page">
+    <div class="bookings-header">
+        <div>
+            <h2>Bookings</h2>
+            <p>Your confirmed stays are listed here.</p>
+        </div>
+        <a class="btn bookings-add-btn" href="/listings">Book another stay</a>
+    </div>
+
+    <% if (bookings && bookings.length) { %>
+        <div class="bookings-grid">
+            <% bookings.forEach((booking) => { %>
+                <article class="booking-list-card">
+                    <img src="<%= booking.listing && booking.listing.image ? booking.listing.image : 'https://foundtheworld.com/wp-content/uploads/2015/09/Emirates-Palace-Luxury-hotel.png' %>" alt="Booked stay image">
+                    <div class="booking-list-body">
+                        <div>
+                            <h3><%= booking.listing ? booking.listing.title : 'Deleted listing' %></h3>
+                            <p><%= booking.listing ? `${booking.listing.location}, ${booking.listing.country}` : 'Listing details are no longer available.' %></p>
+                        </div>
+                        <div class="booking-list-details">
+                            <span><b>Guest</b><%= booking.guestName %></span>
+                            <span><b>Dates</b><%= booking.checkIn.toDateString() %> to <%= booking.checkOut.toDateString() %></span>
+                            <span><b>Guests</b><%= booking.guests %></span>
+                            <span><b>Total</b>&#8377; <%= booking.totalPrice.toLocaleString("en-IN") %></span>
+                        </div>
+                        <div class="booking-list-actions">
+                            <a class="btn booking-view-btn" href="/bookings/<%= booking._id %>">View booking</a>
+                            <form method="POST" action="/bookings/<%= booking._id %>/delete">
+                                <button class="btn booking-delete-btn">Delete booking</button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+            <% }) %>
+        </div>
+    <% } else { %>
+        <div class="bookings-empty">
+            <h3>No bookings yet</h3>
+            <p>Reserve a stay and it will appear here.</p>
+            <a class="btn booking-view-btn" href="/listings">Explore listings</a>
+        </div>
+    <% } %>
+</section>

@@ -6,19 +6,30 @@
             </div>
             <div class="col-10 offset-1">
                 <div class="show-booking-layout">
-                    <div class="card show-card listing-card">
-                        <img src="<%= listing.image %>" class="card-img-top show-img" alt="listing_image">
-                        <div class="card-body">
-                            <p class="card-text">
-                                <b>
-                                    <%= listing.title %>
-                                </b><br>
-                                <%= listing.description %><br>
-                                    &#8377; <%= typeof listing.price==='number' ? listing.price.toLocaleString("en-IN") :
-                                        listing.price %> / night<br>
-                                        <%= listing.location %><br>
-                                            <%= listing.country %>
-                            </p>
+                    <div class="listing-main-panel">
+                        <div class="card show-card listing-card">
+                            <div class="image-shell show-image-shell is-loading">
+                                <img src="<%= listing.image %>" class="card-img-top show-img js-managed-image" alt="<%= listing.title %>" loading="eager" decoding="async" fetchpriority="high" data-fallback-src="/images/stay-placeholder.svg">
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <b>
+                                        <%= listing.title %>
+                                    </b><br>
+                                    <%= listing.description %><br>
+                                        <span class="listing-category"><%= listing.category || 'Rooms' %></span><br>
+                                        &#8377; <%= typeof listing.price==='number' ? listing.price.toLocaleString("en-IN") :
+                                            listing.price %> / night<br>
+                                            <%= listing.location %><br>
+                                                <%= listing.country %>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="btns listing-action-btns gap-3">
+                            <a href="/listings/<%= listing._id %>/edit" class="btn btn-danger edit-btn">Edit</a>
+                            <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
+                                <button class="btn btn-dark">Delete</button>
+                            </form>
                         </div>
                     </div>
                     <aside class="booking-card">
@@ -26,41 +37,158 @@
                             <b>&#8377; <%= typeof listing.price==='number' ? listing.price.toLocaleString("en-IN") : listing.price %></b>
                             <span>/ night</span>
                         </div>
-                        <form method="POST" action="/listings/<%= listing._id %>/bookings" class="booking-form">
-                            <div class="booking-form-grid">
+                        <div class="booking-action-tabs" role="tablist" aria-label="Stay actions">
+                            <button class="booking-tab-btn active" id="reserve-tab" data-bs-toggle="tab" data-bs-target="#reserve-panel" type="button" role="tab" aria-controls="reserve-panel" aria-selected="true">
+                                <i class="fa-regular fa-calendar-check"></i>
+                                Reserve
+                            </button>
+                            <button class="booking-tab-btn" id="wishlist-tab" data-bs-toggle="tab" data-bs-target="#wishlist-panel" type="button" role="tab" aria-controls="wishlist-panel" aria-selected="false">
+                                <i class="fa-regular fa-heart"></i>
+                                Save
+                            </button>
+                            <button class="booking-tab-btn" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-panel" type="button" role="tab" aria-controls="contact-panel" aria-selected="false">
+                                <i class="fa-regular fa-paper-plane"></i>
+                                Contact
+                            </button>
+                        </div>
+                        <div class="booking-card-actions tab-content">
+                            <form method="POST" action="/listings/<%= listing._id %>/bookings" class="booking-form tab-pane fade show active" id="reserve-panel" role="tabpanel" aria-labelledby="reserve-tab">
+                                <div class="booking-form-grid">
+                                    <label>
+                                        <span>Check in</span>
+                                        <input name="booking[checkIn]" type="date" required>
+                                    </label>
+                                    <label>
+                                        <span>Check out</span>
+                                        <input name="booking[checkOut]" type="date" required>
+                                    </label>
+                                </div>
                                 <label>
-                                    <span>Check in</span>
-                                    <input name="booking[checkIn]" type="date" required>
+                                    <span>Guests</span>
+                                    <input name="booking[guests]" type="number" min="1" value="1" required>
                                 </label>
                                 <label>
-                                    <span>Check out</span>
-                                    <input name="booking[checkOut]" type="date" required>
+                                    <span>Name</span>
+                                    <input name="booking[guestName]" type="text" placeholder="Your full name" required>
                                 </label>
-                            </div>
-                            <label>
-                                <span>Guests</span>
-                                <input name="booking[guests]" type="number" min="1" value="1" required>
-                            </label>
-                            <label>
-                                <span>Name</span>
-                                <input name="booking[guestName]" type="text" placeholder="Your full name" required>
-                            </label>
-                            <label>
-                                <span>Email</span>
-                                <input name="booking[guestEmail]" type="email" placeholder="you@example.com" required>
-                            </label>
-                            <button class="booking-reserve-btn" type="submit">Reserve</button>
-                        </form>
-                        <p class="booking-note">Booking data will be saved in database.</p>
+                                <label>
+                                    <span>Email</span>
+                                    <input name="booking[guestEmail]" type="email" placeholder="you@example.com" required>
+                                </label>
+                                <button class="booking-reserve-btn" type="submit">
+                                    <i class="fa-regular fa-calendar-check"></i>
+                                    Reserve now
+                                </button>
+                            </form>
+                            <form method="POST" action="/listings/<%= listing._id %>/wishlist" class="wishlist-save-form tab-pane fade" id="wishlist-panel" role="tabpanel" aria-labelledby="wishlist-tab">
+                                <h4>Save to wishlist</h4>
+                                <label>
+                                    <span>Note</span>
+                                    <input name="wishlist[note]" type="text" maxlength="160" placeholder="Add a note">
+                                </label>
+                                <button class="wishlist-save-btn" type="submit">
+                                    <i class="fa-regular fa-heart"></i>
+                                    Save
+                                </button>
+                            </form>
+                            <form method="POST" action="/listings/<%= listing._id %>/inquiries" class="inquiry-form tab-pane fade" id="contact-panel" role="tabpanel" aria-labelledby="contact-tab">
+                                <h4>Contact host</h4>
+                                <div class="inquiry-form-grid">
+                                    <label>
+                                        <span>Name</span>
+                                        <input name="inquiry[guestName]" type="text" placeholder="Your name" required minlength="2">
+                                    </label>
+                                    <label>
+                                        <span>Email</span>
+                                        <input name="inquiry[guestEmail]" type="email" placeholder="you@example.com" required>
+                                    </label>
+                                </div>
+                                <label>
+                                    <span>Phone</span>
+                                    <input name="inquiry[phone]" type="tel" placeholder="Optional">
+                                </label>
+                                <label>
+                                    <span>Message</span>
+                                    <textarea name="inquiry[message]" rows="3" placeholder="Ask about this stay" required minlength="10" maxlength="1000"></textarea>
+                                </label>
+                                <button class="inquiry-send-btn" type="submit">
+                                    <i class="fa-regular fa-paper-plane"></i>
+                                    Send inquiry
+                                </button>
+                            </form>
+                        </div>
                     </aside>
                 </div>
             </div>
 
-            <div class="btns gap-3 mt-3 col-10 offset-1">
-                <a href="/listings/<%= listing._id %>/edit" class="btn btn-danger edit-btn">Edit</a>
-                <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
-                    <button class="btn btn-dark">Delete</button>
-                </form>
+            <% if (false) { %>
+            <div class="col-10 offset-1 mt-4">
+                <section class="guest-action-panel guest-action-panel-hidden">
+                    <form method="POST" action="/listings/<%= listing._id %>/wishlist" class="wishlist-save-form">
+                        <div>
+                            <h4>Save this stay</h4>
+                            <p>Add a private note for your wishlist.</p>
+                        </div>
+                        <label>
+                            <span>Wishlist note</span>
+                            <input name="wishlist[note]" type="text" maxlength="160" placeholder="Why save this stay?">
+                        </label>
+                        <button class="wishlist-save-btn" type="submit">
+                            <i class="fa-regular fa-heart"></i>
+                            Save
+                        </button>
+                    </form>
+                    <form method="POST" action="/listings/<%= listing._id %>/inquiries" class="inquiry-form">
+                        <h4>Contact host</h4>
+                        <div class="inquiry-form-grid">
+                            <label>
+                                <span>Name</span>
+                                <input name="inquiry[guestName]" type="text" placeholder="Your name" required minlength="2">
+                            </label>
+                            <label>
+                                <span>Email</span>
+                                <input name="inquiry[guestEmail]" type="email" placeholder="you@example.com" required>
+                            </label>
+                        </div>
+                        <label>
+                            <span>Phone</span>
+                            <input name="inquiry[phone]" type="tel" placeholder="Optional">
+                        </label>
+                        <label>
+                            <span>Message</span>
+                            <textarea name="inquiry[message]" rows="3" placeholder="Ask about availability, house rules or anything else." required minlength="10" maxlength="1000"></textarea>
+                        </label>
+                        <button class="inquiry-send-btn" type="submit">
+                            <i class="fa-regular fa-paper-plane"></i>
+                            Send inquiry
+                        </button>
+                    </form>
+                </section>
+            </div>
+            <% } %>
+
+            <div class="col-10 offset-1 mt-5">
+                <% const mapAddress = `${listing.location}, ${listing.country}`; %>
+                <% const mapQuery = encodeURIComponent(mapAddress); %>
+                <section class="listing-location-section">
+                    <div class="listing-location-header">
+                        <div>
+                            <h3>Where you'll be</h3>
+                            <p><i class="fa-solid fa-location-dot"></i> <%= mapAddress %></p>
+                        </div>
+                        <a class="map-open-link" href="https://www.google.com/maps/search/?api=1&query=<%= mapQuery %>" target="_blank" rel="noopener">
+                            Open map
+                        </a>
+                    </div>
+                    <div class="map-preview">
+                        <iframe
+                            title="Map preview for <%= listing.title %>"
+                            src="https://maps.google.com/maps?q=<%= mapQuery %>&output=embed"
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </section>
             </div>
 
             <div class="col-10 offset-1 mt-5">
@@ -102,7 +230,10 @@
                         <label for="comment" class="form-label">Comment</label>
                         <textarea name="review[comment]" class="form-control" id="comment" rows="4" placeholder="Share what stood out about your stay" required></textarea>
                     </div>
-                    <button class="btn review-submit-btn">Submit review</button>
+                    <button class="btn review-submit-btn" type="submit">
+                        <i class="fa-regular fa-star"></i>
+                        Submit review
+                    </button>
                 </form>
 
                 <% if (listing.reviews && listing.reviews.length) { %>

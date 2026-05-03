@@ -1,0 +1,59 @@
+<% layout("layouts/boilerplate") %>
+
+<section class="inquiries-page">
+    <div class="inquiries-header">
+        <div>
+            <h2>Host Inquiries</h2>
+            <p>Guest messages saved from listing pages.</p>
+        </div>
+        <a class="btn inquiry-add-btn" href="/listings">View listings</a>
+    </div>
+
+    <% if (inquiries && inquiries.length) { %>
+        <div class="inquiry-grid">
+            <% inquiries.forEach((inquiry) => { %>
+                <article class="inquiry-card">
+                    <div class="inquiry-card-top">
+                        <div>
+                            <h3><%= inquiry.guestName %></h3>
+                            <p><%= inquiry.guestEmail %><%= inquiry.phone ? ` · ${inquiry.phone}` : '' %></p>
+                        </div>
+                        <span class="inquiry-status inquiry-status-<%= inquiry.status %>"><%= inquiry.status %></span>
+                    </div>
+                    <div class="inquiry-listing">
+                        <b><%= inquiry.listing ? inquiry.listing.title : 'Deleted listing' %></b>
+                        <% if (inquiry.listing) { %>
+                            <span><%= inquiry.listing.location %>, <%= inquiry.listing.country %></span>
+                        <% } %>
+                    </div>
+                    <p class="inquiry-message"><%= inquiry.message %></p>
+                    <div class="inquiry-meta">
+                        <span><%= inquiry.createdAt ? inquiry.createdAt.toDateString() : 'Recently' %></span>
+                    </div>
+                    <div class="inquiry-actions">
+                        <% if (inquiry.listing) { %>
+                            <a class="btn inquiry-view-btn" href="/listings/<%= inquiry.listing._id %>">View stay</a>
+                        <% } %>
+                        <form method="POST" action="/inquiries/<%= inquiry._id %>/status" class="inquiry-status-form">
+                            <select name="status" aria-label="Inquiry status">
+                                <option value="new" <%= inquiry.status === 'new' ? 'selected' : '' %>>New</option>
+                                <option value="replied" <%= inquiry.status === 'replied' ? 'selected' : '' %>>Replied</option>
+                                <option value="closed" <%= inquiry.status === 'closed' ? 'selected' : '' %>>Closed</option>
+                            </select>
+                            <button class="btn inquiry-update-btn">Update</button>
+                        </form>
+                        <form method="POST" action="/inquiries/<%= inquiry._id %>/delete">
+                            <button class="btn inquiry-delete-btn">Delete</button>
+                        </form>
+                    </div>
+                </article>
+            <% }) %>
+        </div>
+    <% } else { %>
+        <div class="inquiries-empty">
+            <h3>No inquiries yet</h3>
+            <p>Guests can contact the host from any listing detail page.</p>
+            <a class="btn inquiry-view-btn" href="/listings">Browse listings</a>
+        </div>
+    <% } %>
+</section>

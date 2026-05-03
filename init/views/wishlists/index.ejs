@@ -1,0 +1,44 @@
+<% layout("layouts/boilerplate") %>
+
+<section class="wishlists-page">
+    <div class="wishlists-header">
+        <div>
+            <h2>Wishlists</h2>
+            <p>Your saved stays from listings are listed here.</p>
+        </div>
+        <a class="btn wishlist-add-btn" href="/listings">Explore stays</a>
+    </div>
+
+    <% if (wishlists && wishlists.length) { %>
+        <div class="wishlist-grid">
+            <% wishlists.forEach((item) => { %>
+                <article class="wishlist-card">
+                    <img src="<%= item.listing && item.listing.image ? item.listing.image : 'https://foundtheworld.com/wp-content/uploads/2015/09/Emirates-Palace-Luxury-hotel.png' %>" alt="Saved stay image">
+                    <div class="wishlist-card-body">
+                        <div>
+                            <h3><%= item.listing ? item.listing.title : 'Deleted listing' %></h3>
+                            <p><%= item.listing ? `${item.listing.location}, ${item.listing.country}` : 'Listing details are no longer available.' %></p>
+                        </div>
+                        <% if (item.note) { %>
+                            <p class="wishlist-note"><%= item.note %></p>
+                        <% } %>
+                        <div class="wishlist-actions">
+                            <% if (item.listing) { %>
+                                <a class="btn wishlist-view-btn" href="/listings/<%= item.listing._id %>">View stay</a>
+                            <% } %>
+                            <form method="POST" action="/wishlists/<%= item._id %>/delete">
+                                <button class="btn wishlist-remove-btn">Remove</button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+            <% }) %>
+        </div>
+    <% } else { %>
+        <div class="wishlists-empty">
+            <h3>No saved stays yet</h3>
+            <p>Open any listing and save it to your wishlist.</p>
+            <a class="btn wishlist-view-btn" href="/listings">Browse listings</a>
+        </div>
+    <% } %>
+</section>

@@ -4,62 +4,148 @@
         <div class="home-hero-card">
             <h1>Find places to stay on StayNest</h1>
             <p>Discover homes, villas and rooms perfect for your next trip.</p>
-            <form class="home-search-panel" action="#all-listings">
+            <form class="home-search-panel" action="/listings" method="GET">
                 <label class="home-search-field home-search-field-wide">
                     <span>Location</span>
-                    <input type="text" value="Nearby" aria-label="Location">
+                    <input name="search" type="text" value="<%= search || '' %>" placeholder="Search city, country or stay" aria-label="Location">
                 </label>
                 <div class="home-search-row">
                     <label class="home-search-field">
                         <span>Check in</span>
-                        <input type="text" value="Add dates" aria-label="Check in">
+                        <input type="date" aria-label="Check in">
                     </label>
                     <label class="home-search-field">
                         <span>Check out</span>
-                        <input type="text" value="Add dates" aria-label="Check out">
+                        <input type="date" aria-label="Check out">
                     </label>
                 </div>
                 <div class="home-search-row">
                     <label class="home-search-field">
-                        <span>Adults</span>
-                        <select aria-label="Adults">
+                        <span>Category</span>
+                        <select name="category" aria-label="Category">
+                            <option value="">Any stay</option>
+                            <% categories.forEach((item) => { %>
+                                <option value="<%= item %>" <%= category === item ? 'selected' : '' %>><%= item %></option>
+                            <% }) %>
+                        </select>
+                    </label>
+                    <label class="home-search-field">
+                        <span>Guests</span>
+                        <select aria-label="Guests">
                             <option>2</option>
                             <option>1</option>
                             <option>3</option>
                             <option>4</option>
-                        </select>
-                    </label>
-                    <label class="home-search-field">
-                        <span>Children</span>
-                        <select aria-label="Children">
-                            <option>0</option>
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
+                            <option>5</option>
                         </select>
                     </label>
                 </div>
                 <button class="home-search-btn" type="submit">Search</button>
             </form>
         </div>
-        <img class="home-hero-img" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85" alt="Beautiful modern home exterior">
+        <div class="image-shell home-hero-image-shell is-loading">
+            <img class="home-hero-img js-managed-image" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1100&q=65&fm=webp" alt="Beautiful modern home exterior" loading="eager" decoding="async" fetchpriority="high" data-fallback-src="/images/stay-placeholder.svg">
+        </div>
     </section>
 
     <div id="all-listings"></div>
-    <h3>All Listings</h3>
-    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
-        <% for(let listing of listings) { %>
-            <a href="/listings/<%= listing._id %>" class="listing-link">
-                <div class="card col listing-card">
-                    <img src="<%= listing.image %>" class="card-img-top" alt="listing_image">
-                    <div class="card-img-overlay"></div>
-                    <div class="card-body">
-                        <p class="card-text">
-                            <b><%= listing.title %></b><br>
-                            &#8377; <%= typeof listing.price==='number' ? listing.price.toLocaleString("en-IN") : listing.price %> / night
-                        </p>
+    <section class="listing-results-header">
+        <div>
+            <h3><%= search || category ? 'Search Results' : 'All Listings' %></h3>
+            <p><%= totalListings %> <%= totalListings === 1 ? 'stay' : 'stays' %> found<%= search ? ` for "${search}"` : '' %><%= category ? ` in ${category}` : '' %>.</p>
+        </div>
+        <% if (search || category) { %>
+            <a class="btn clear-search-btn" href="/listings">Clear filters</a>
+        <% } %>
+    </section>
+
+    <nav class="category-filter" aria-label="Listing categories">
+        <a class="<%= !category ? 'active' : '' %>" href="/listings<%= search ? `?search=${encodeURIComponent(search)}` : '' %>">All</a>
+        <% categories.forEach((item) => { %>
+            <% const params = new URLSearchParams(); %>
+            <% if (search) params.set('search', search); %>
+            <% params.set('category', item); %>
+            <a class="<%= category === item ? 'active' : '' %>" href="/listings?<%= params.toString() %>"><%= item %></a>
+        <% }) %>
+    </nav>
+
+    <% if (listings.length) { %>
+        <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+            <% listings.forEach((listing, index) => { %>
+                <a href="/listings/<%= listing._id %>" class="listing-link">
+                    <div class="card col listing-card">
+                        <div class="image-shell listing-image-shell is-loading">
+                            <img src="<%= listing.image %>" class="card-img-top js-managed-image" alt="<%= listing.title %>" loading="<%= index < 2 ? 'eager' : 'lazy' %>" decoding="async" data-fallback-src="/images/stay-placeholder.svg" <%= index < 2 ? 'fetchpriority="high"' : '' %>>
+                        </div>
+                        <div class="card-img-overlay"></div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                <b><%= listing.title %></b><br>
+                                <span class="listing-category"><%= listing.category || 'Rooms' %></span><br>
+                                &#8377; <%= typeof listing.price==='number' ? listing.price.toLocaleString("en-IN") : listing.price %> / night
+                            </p>
+                        </div>
                     </div>
-                </div>
-            </a>
+                </a>
+            <% }) %>
+        </div>
+    <% } else { %>
+        <div class="no-listings-found">
+            <h4>No stays found</h4>
+            <p>Try another location or category.</p>
+        </div>
+    <% } %>
+
+    <% if (totalPages > 1) { %>
+        <nav class="listing-pagination" aria-label="Listing pages">
+            <% const previousParams = new URLSearchParams(); %>
+            <% if (search) previousParams.set('search', search); %>
+            <% if (category) previousParams.set('category', category); %>
+            <% previousParams.set('page', Math.max(currentPage - 1, 1)); %>
+            <a class="<%= currentPage === 1 ? 'disabled' : '' %>" href="/listings?<%= previousParams.toString() %>">Previous</a>
+
+            <% for (let page = 1; page <= totalPages; page++) { %>
+                <% const pageParams = new URLSearchParams(); %>
+                <% if (search) pageParams.set('search', search); %>
+                <% if (category) pageParams.set('category', category); %>
+                <% pageParams.set('page', page); %>
+                <a class="<%= currentPage === page ? 'active' : '' %>" href="/listings?<%= pageParams.toString() %>"><%= page %></a>
             <% } %>
-    </div>
+
+            <% const nextParams = new URLSearchParams(); %>
+            <% if (search) nextParams.set('search', search); %>
+            <% if (category) nextParams.set('category', category); %>
+            <% nextParams.set('page', Math.min(currentPage + 1, totalPages)); %>
+            <a class="<%= currentPage === totalPages ? 'disabled' : '' %>" href="/listings?<%= nextParams.toString() %>">Next</a>
+        </nav>
+    <% } %>
+
+    <% if (isHomePage && !search && !category && currentPage === 1) { %>
+        <section class="home-faq-section">
+            <div class="home-faq-heading">
+                <h2>Your questions, answered</h2>
+            </div>
+            <div class="home-faq-list">
+                <details>
+                    <summary>What is StayNest and how does it work?</summary>
+                    <p>StayNest helps you discover stays, view details, save favorites and reserve a place from the listing page.</p>
+                </details>
+                <details>
+                    <summary>How do I use search filters?</summary>
+                    <p>Search by city or stay name, then use category filters like Rooms, Villa, Apartment or Beach.</p>
+                </details>
+                <details>
+                    <summary>Do I need to meet my Host?</summary>
+                    <p>Not always. Use the Contact tab on a listing when you need arrival details or any extra information.</p>
+                </details>
+                <details>
+                    <summary>What if I need to cancel due to a problem with the listing or Host?</summary>
+                    <p>You can review your booking details and contact the host from the listing before making changes.</p>
+                </details>
+                <details>
+                    <summary>Need more information?</summary>
+                    <p>Yes. Open a listing and use the Contact tab in the reserve box to send an inquiry.</p>
+                </details>
+            </div>
+        </section>
+    <% } %>

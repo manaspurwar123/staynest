@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">StayNest listing placeholder</title>
+  <desc id="desc">A simple house and hills illustration used when a listing image is unavailable.</desc>
+  <rect width="1200" height="800" fill="#f6f4f0"/>
+  <path d="M0 570 C180 500 315 545 465 500 C620 454 745 370 925 420 C1045 454 1130 520 1200 498 L1200 800 L0 800 Z" fill="#d9e7df"/>
+  <path d="M0 650 C165 605 300 640 450 612 C630 578 750 520 940 555 C1070 579 1135 620 1200 603 L1200 800 L0 800 Z" fill="#bfd8ca"/>
+  <rect x="348" y="348" width="410" height="270" rx="20" fill="#ffffff"/>
+  <path d="M316 382 L553 198 L790 382 Z" fill="#fe424d"/>
+  <path d="M395 392 L553 270 L711 392 Z" fill="#df1f48"/>
+  <rect x="421" y="438" width="108" height="180" rx="10" fill="#2f3437"/>
+  <rect x="584" y="432" width="104" height="86" rx="10" fill="#b9dbe8"/>
+  <path d="M636 432 L636 518 M584 475 L688 475" stroke="#ffffff" stroke-width="10"/>
+  <circle cx="501" cy="530" r="8" fill="#ffffff"/>
+  <path d="M820 612 C780 560 792 495 848 466 C900 440 960 464 984 516 C1015 585 956 646 892 640 C860 638 837 630 820 612 Z" fill="#8bb69d"/>
+  <text x="600" y="715" text-anchor="middle" fill="#5f6368" font-family="Arial, sans-serif" font-size="42" font-weight="700">StayNest</text>
+</svg>
