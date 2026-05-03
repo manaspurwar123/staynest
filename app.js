@@ -40,24 +40,13 @@ app.use(session({
 const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/mydb';
 const PORT = process.env.PORT || 8080;
 
-async function main() {
-    await mongoose.connect(MONGO_URL);
+async function seedListingsIfNeeded() {
+    const count = await Listing.countDocuments({});
+    if (count === 0) {
+        await Listing.insertMany(initData.data);
+        console.log('Sample listings inserted');
+    }
 }
-
-main()
-    .then(() => {
-        console.log('Connected to MongoDB');
-        return Listing.countDocuments({});
-    })
-    .then(async (count) => {
-        if (count === 0) {
-            await Listing.insertMany(initData.data);
-            console.log('Sample listings inserted');
-        }
-    })
-    .catch((err) => {
-        console.error('Error connecting to MongoDB', err);
-    });
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'init', 'views'));
@@ -243,6 +232,18 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render('error', { err });
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+async function startServer() {
+    try {
+        await mongoose.connect(MONGO_URL, { serverSelectionTimeoutMS: 10000 });
+        console.log('Connected to MongoDB');
+        await seedListingsIfNeeded();
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+    } catch (err) {
+        console.error('Error connecting to MongoDB', err);
+        process.exit(1);
+    }
+}
+
+startServer();
